@@ -1,2 +1,13 @@
 # virtual env
 venv_abt/*
+
+# PyCharm ide
+.idea/*
+
+# data
+data/*
+!data/README.md
+!/data/.gitkeep
+!/data/raw/.gitkeep
+!/data/interim/.gitkeep
+!/data/processed/.gitkeep
