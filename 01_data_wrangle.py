@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv(filepath_or_buffer='data/raw/ab_data.csv')
+df = pd.read_csv(filepath_or_buffer="data/raw/ab_data.csv")
 
 # expect control group to see old_page
 # and treatment to see new_page only
@@ -23,5 +23,4 @@ df_clean["user_id"].value_counts(sort=True)
 df_clean[df_clean["user_id"] == 773192]
 df_clean = df_clean.drop_duplicates(subset="user_id", keep="last", inplace=False)
 
-df_clean.to_csv(path_or_buf='data/interim/df_conversion_clean.csv',
-                index=False)
+df_clean.to_csv(path_or_buf="data/interim/df_conversion_clean.csv", index=False)
