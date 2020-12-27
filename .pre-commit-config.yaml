@@ -13,3 +13,16 @@ repos:
     hooks:
       - id: black
         language_version: python3 # Should be a command that runs python3.6+
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: master
+    hooks:
+    -   id: flake8
+        args: ['src']
+-   repo: https://github.com/aflc/pre-commit-jupyter
+    rev: v1.1.0
+    hooks:
+    -   id: jupyter-notebook-cleanup
+        args:
+        -   --remove-kernel-metadata
+        -   --pin-patterns
+        -   "[keep_output]"
