@@ -1,3 +1,4 @@
+from doctest import testmod
 import pandas as pd
 
 
@@ -50,6 +51,8 @@ def report_conversions(
     ...                    group_filter='control',
     ...                    convert_col='converted',
     ...                    page_col='landing_page')
+    Percentage of control users who saw ['old_page']: 60.0%
+    (1, 0.3333333333333333)
     """
     try:
         df_filter = data[data[group_col] == group_filter]
@@ -75,3 +78,7 @@ def report_conversions(
 
     except Exception:
         raise
+
+
+if __name__ == "__main__":
+    testmod(name="report_conversions", verbose=True)
