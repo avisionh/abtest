@@ -51,7 +51,6 @@ def report_conversions(
     ...                    convert_col='converted',
     ...                    page_col='landing_page')
     """
-
     try:
         df_filter = data[data[group_col] == group_filter]
         page_seen = df_filter[page_col].unique()
