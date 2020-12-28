@@ -1,7 +1,9 @@
 from doctest import testmod
 from typing import Union
 import pandas as pd
+import math
 import statsmodels.stats.api as sms
+import scipy.stats as st
 
 
 def report_conversions(
@@ -110,7 +112,7 @@ def get_sample_size(
 
     Returns
     _______
-    float
+    sample_size : float
         Float of the sample size to use for the A/B test experiment.
 
     Examples
@@ -129,6 +131,67 @@ def get_sample_size(
         )
         print(f"Required sample size: {round(sample_size)} per group")
         return sample_size
+    except Exception:
+        raise
+
+
+def get_ab_test_ci(
+    conversions_control: int,
+    conversions_treatment: int,
+    total_users_control: int,
+    total_users_treatment: int,
+    confidence_level: float = 0.05,
+) -> str:
+    """
+    Conducts an A/B test on the two sided hypothesis:
+        - H_0: Probability of conversion in treatment group minus probability of conversion in control group is 0.
+        - H_1: Probability of conversion in treatment group minus probability of conversion in control group is not 0.
+
+    References:
+        - https://henryfeng.medium.com/handy-functions-for-a-b-testing-in-python-f6fdff892a90
+
+    Parameters
+    __________
+    conversions_control : int
+        Number of people who converted in the control group.
+    conversions_treatment : int
+        Number of people who converted in the treatment group.
+    total_users_control : int
+        Number of people in the control group.
+    total_users_treatment : int
+        Number of people in the treatment group.
+    confidence_level : float
+        Float of the probability that the null hypothesis (experiment and control are the same) is rejected when it
+        should not be. Also called significance level.
+
+    Returns
+    _______
+    lower_bound, upper_bound : float, float
+        Floats of the lower and upper-bounds of the C.I.
+    """
+    try:
+        # compute conversion rates
+        conversion_rate_control = conversions_control / total_users_control
+        conversion_rate_treatment = conversions_treatment / total_users_treatment
+
+        # compute statistics for constructing C.I.
+        conversion_mean = conversion_rate_treatment - conversion_rate_control
+        variance = (
+            conversion_rate_treatment
+            * (1 - conversion_rate_treatment)
+            / total_users_treatment
+            + conversion_rate_control
+            * (1 - conversion_rate_control)
+            / total_users_control
+        )
+        sd = math.sqrt(variance)
+        z_score = abs(st.norm.ppf(q=(1 - confidence_level) / 2))
+
+        # compute C.I.
+        lower_bound = conversion_mean - z_score * sd
+        upper_bound = conversion_mean + z_score * sd
+
+        return lower_bound, upper_bound
     except Exception:
         raise
 
