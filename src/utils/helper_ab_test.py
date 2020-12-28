@@ -240,5 +240,30 @@ def get_ab_test_ci(
         raise
 
 
+def conclude_ab_test(
+    lower_bound: float,
+    upper_bound: float,
+    practical_significance: float,
+):
+    """
+    Concludes whether we reject or do not reject H_0.
+
+    Parameters
+    __________
+    lower_bound : float
+        Float of the lower bound of our confidence interval.
+    upper_bound : float
+        Float of the upper bound of our confidence interval.
+    practical_significance : float
+        Float of an estimate of the the minimum change to the baseline rate that is useful to the business. For example
+        an increase in the conversion rate of 0.001% may not be worth the effort required to make the change whereas a
+        2% change will be.
+    """
+    if practical_significance < lower_bound or practical_significance > upper_bound:
+        print("Reject null hypothesis.")
+    else:
+        print("Insufficient evidence to reject null hypothesis.")
+
+
 if __name__ == "__main__":
     testmod(verbose=True)
