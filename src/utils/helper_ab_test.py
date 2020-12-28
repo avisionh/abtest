@@ -1,4 +1,5 @@
 from doctest import testmod
+from typing import Union
 import pandas as pd
 
 
@@ -52,7 +53,7 @@ def report_conversions(
     ...                    convert_col='converted',
     ...                    page_col='landing_page')
     Percentage of control users who saw ['old_page']: 60.0%
-    (1, 0.3333333333333333)
+    (1, 3, 0.3333333333333333)
     """
     try:
         df_filter = data[data[group_col] == group_filter]
@@ -74,10 +75,30 @@ def report_conversions(
             print(
                 f"Percentage of {group_filter} users who saw {page_seen}: {percent_page}%"
             )
-            return conversions, conversions / total_users
+            return conversions, total_users, conversions / total_users
 
     except Exception:
         raise
+
+
+def get_sample_size(
+    total_users: Union[int, float],
+    total_conversions: [int, float],
+    practical_significance: float,
+    confidence_level: float,
+    sensitivity: float,
+) -> float:
+    """
+    Calculates the required sample size for A/B testing.
+
+    Reference:
+        - https://github.com/RobbieGeoghegan/AB_Testing/blob/master/AB_Testing.ipynb
+
+    Parameters
+    __________
+    total_users : Union[int, float]
+        Integer or float of the number of users
+    """
 
 
 if __name__ == "__main__":
