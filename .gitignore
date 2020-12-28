@@ -10,4 +10,13 @@ data/*
 !/data/.gitkeep
 !/data/raw/.gitkeep
 !/data/interim/.gitkeep
-!/data/processed/.gitkeep
+!/data/processedrm/.gitkeep
+
+# Django
+*.pyc
+__pycache__/
+
+# unit-tests / coverage reports
+.pytest_cache/
+.coverage
+.coverage.*
