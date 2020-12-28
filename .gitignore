@@ -13,10 +13,10 @@ data/*
 !/data/processedrm/.gitkeep
 
 # Django
-*.pyc
-__pycache__/
+#*.pyc
+#__pycache__/
 
 # unit-tests / coverage reports
-.pytest_cache/
+#.pytest_cache/
 .coverage
 .coverage.*

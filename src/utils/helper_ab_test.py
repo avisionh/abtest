@@ -1,6 +1,7 @@
 from doctest import testmod
 from typing import Union
 import pandas as pd
+import statsmodels.stats.api as sms
 
 
 def report_conversions(
@@ -82,11 +83,10 @@ def report_conversions(
 
 
 def get_sample_size(
-    total_users: Union[int, float],
-    total_conversions: [int, float],
-    practical_significance: float,
-    confidence_level: float,
-    sensitivity: float,
+    baseline_rate: Union[int, float],
+    practical_significance: float = 0.01,
+    confidence_level: float = 0.05,
+    sensitivity: float = 0.8,
 ) -> float:
     """
     Calculates the required sample size for A/B testing.
@@ -96,9 +96,29 @@ def get_sample_size(
 
     Parameters
     __________
-    total_users : Union[int, float]
-        Integer or float of the number of users
+    baseline_rate : Union[int, float]
+        Integer or float of an estimate of the metric being analyzed before making any changes
+    practical_significance : float
+        Float of an estimate of the the minimum change to the baseline rate that is useful to the business. For example
+        an increase in the conversion rate of 0.001% may not be worth the effort required to make the change whereas a
+        2% change will be.
+    confidence_level : float
+        Float of the probability that the null hypothesis (experiment and control are the same) is rejected when it
+        should not be. Also called significance level.
+    sensitivity : float
+        Float of the probability that the null hypothesis is not rejected when it should be
     """
+    try:
+        effect_size = sms.proportion_effectsize(
+            prop1=baseline_rate, prop2=baseline_rate + practical_significance
+        )
+        sample_size = sms.NormalIndPower().solve_power(
+            effect_size=effect_size, power=sensitivity, alpha=confidence_level, ratio=1
+        )
+        print(f"Required sample size: {round(number=sample_size)} per group")
+        return sample_size
+    except Exception:
+        raise
 
 
 if __name__ == "__main__":
