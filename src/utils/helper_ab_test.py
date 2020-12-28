@@ -91,7 +91,7 @@ def get_sample_size(
     sensitivity: float = 0.8,
 ) -> float:
     """
-    Calculates the required sample size for A/B testing.
+    Calculates the required sample size for hypothesis-testing.
 
     Reference:
         - https://github.com/RobbieGeoghegan/AB_Testing/blob/master/AB_Testing.ipynb
@@ -99,7 +99,7 @@ def get_sample_size(
     Parameters
     __________
     baseline_rate : Union[int, float]
-        Integer or float of an estimate of the metric being analyzed before making any changes
+        Integer or float of an estimate of the metric being analyzed before making any changes.
     practical_significance : float
         Float of an estimate of the the minimum change to the baseline rate that is useful to the business. For example
         an increase in the conversion rate of 0.001% may not be worth the effort required to make the change whereas a
@@ -131,6 +131,50 @@ def get_sample_size(
         )
         print(f"Required sample size: {round(sample_size)} per group")
         return sample_size
+    except Exception:
+        raise
+
+
+def check_sample_sizes(
+    total_users_control: int,
+    total_users_treatment: int,
+    baseline_rate: Union[int, float],
+    **kwargs,
+):
+    """
+    Checks whether the control and treatment sizes are large enough to conduct hypothesis-testing.
+
+    Parameters
+    __________
+    total_users_control : int
+       Number of people in the control group.
+    total_users_treatment : int
+        Number of people in the treatment group.
+    baseline_rate : Union[int, float]
+        Integer or float of an estimate of the metric being analyzed before making any changes.
+    **kwargs
+        These parameters will be passed to the get_sample_size() function.
+
+    See Also
+    ________
+    get_sample_size : Calculates the required sample size for hypothesis-testing.
+    """
+    try:
+        sample_size = get_sample_size(baseline_rate=baseline_rate, **kwargs)
+        if total_users_control >= sample_size & total_users_treatment >= sample_size:
+            print(
+                "Control and treatment groups are sufficiently large to conduct hypothesis testing"
+            )
+        elif total_users_control >= sample_size & total_users_treatment < sample_size:
+            print(
+                "Treatment group not sufficiently large to conduct hypothesis testing."
+            )
+        elif total_users_control < sample_size & total_users_treatment >= sample_size:
+            print("Control group not sufficiently large to conduct hypothesis testing.")
+        else:
+            print(
+                "Control and treatment groups not sufficiently large to conduct hypothesis testing."
+            )
     except Exception:
         raise
 
