@@ -10,7 +10,7 @@ def report_conversions(
     group_filter: str,
     convert_col: str,
     page_col: str,
-) -> (int, float):
+) -> (int, int, float):
     """
     Calculates the count and percentages of conversions. Reports on percentage of conversions for control/treatment.
 
@@ -32,7 +32,7 @@ def report_conversions(
 
     Returns
     _______
-    (int, float)
+    (int, int, float)
         Integer of the counts of conversions and decimal representation of the percentages of conversions.
 
     Examples
@@ -106,7 +106,19 @@ def get_sample_size(
         Float of the probability that the null hypothesis (experiment and control are the same) is rejected when it
         should not be. Also called significance level.
     sensitivity : float
-        Float of the probability that the null hypothesis is not rejected when it should be
+        Float of the probability that the null hypothesis is not rejected when it should be.
+
+    Returns
+    _______
+    float
+        Float of the sample size to use for the A/B test experiment.
+
+    Examples
+    ________
+    >>> baseline_rate = 0.1204
+    >>> get_sample_size(baseline_rate=baseline_rate)
+    Required sample size: 17210 per group
+    17210.118424055283
     """
     try:
         effect_size = sms.proportion_effectsize(
@@ -115,11 +127,11 @@ def get_sample_size(
         sample_size = sms.NormalIndPower().solve_power(
             effect_size=effect_size, power=sensitivity, alpha=confidence_level, ratio=1
         )
-        print(f"Required sample size: {round(number=sample_size)} per group")
+        print(f"Required sample size: {round(sample_size)} per group")
         return sample_size
     except Exception:
         raise
 
 
 if __name__ == "__main__":
-    testmod(name="report_conversions", verbose=True)
+    testmod(verbose=True)

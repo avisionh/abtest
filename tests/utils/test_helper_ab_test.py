@@ -12,3 +12,7 @@ def test_report_conversions(df_ab_test, out_report_conversions):
         )
         == out_report_conversions
     )
+
+
+def test_get_sample_size(baseline_rate, out_get_sample_size):
+    assert f.get_sample_size(baseline_rate=baseline_rate) == out_get_sample_size
